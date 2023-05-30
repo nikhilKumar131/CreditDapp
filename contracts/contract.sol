@@ -13,8 +13,9 @@ contract CreditBank2 {
     }
 
     function transfer(address _to, int _amt) public {
-        require(_to != address(0), "can not sent to address 0");
-        require(_amt != 0,"amount can not be 0");
+        require(_to != address(0), "can not sent to address 0 ");
+        require(_amt > 0,"amount can not be 0 or smaller");
+        //solve -ve amt problem
         int myBalance = balanceOf(_to);
         require(myBalance >= _amt);
         _balances[msg.sender] = _balances[msg.sender] - _amt;
@@ -29,6 +30,7 @@ contract CreditBank2 {
     function mint(address _to, int _amt) public{
         require(msg.sender == owner,"only owner can use this function");
         require(_to != address(0), "can not sent to address 0");
+        require(_amt > 0,"amount can not be 0  or smaller");
          _balances[_to] += _amt;
 
     }
@@ -36,5 +38,7 @@ contract CreditBank2 {
 
 
 }
+
+//0xbF6674f9582d3dadCdfce58253244cbCb1EC172c
 
 //0xbF6674f9582d3dadCdfce58253244cbCb1EC172c

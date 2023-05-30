@@ -170,7 +170,7 @@ export default function Home() {
             <a>{balanceValue}</a>
           </div>
           <div className="flex w-2/5 justify-center items-center">
-            {/* <Youtube videoId="sTnm5jvjgjM" opts={opts} className="relative align-middle" /> */}
+            <Youtube videoId="USvABoF1RsQ" onReady={(e) => {e.target.pauseVideo()}} opts={opts} className="relative align-middle mt-20" />
           </div>
 
         </div>

@@ -23,7 +23,7 @@ contract CreditBank2 {
     }
 
     function balanceOf(address _of) public view returns(int){
-        int balance = _balances[_of] + 1000;
+        int balance = _balances[_of] + initialBalance;
         return balance;
     }
 

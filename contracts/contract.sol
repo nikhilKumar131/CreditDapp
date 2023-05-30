@@ -1,72 +1,40 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
 
-contract ercC is ERC20{
+contract CreditBank2 {
 
-    constructor() ERC20("NIK","NIKS"){
-        _mint(address(this),1000000000000000000);
+    int immutable internal initialBalance = 1000;
+    mapping(address => int ) internal _balances;
+    address owner;
+
+    constructor(){
+        owner = msg.sender;
+    }
+
+    function transfer(address _to, int _amt) public {
+        require(_to != address(0), "can not sent to address 0");
+        require(_amt != 0,"amount can not be 0");
+        int myBalance = balanceOf(_to);
+        require(myBalance >= _amt);
+        _balances[msg.sender] = _balances[msg.sender] - _amt;
+        _balances[_to] += _amt;
+    }
+
+    function balanceOf(address _of) public view returns(int){
+        int balance = _balances[_of] + 1000;
+        return balance;
+    }
+
+    function mint(address _to, int _amt) public{
+        require(msg.sender == owner,"only owner can use this function");
+        require(_to != address(0), "can not sent to address 0");
+         _balances[_to] += _amt;
+
     }
 
 
-
-    //staked struct and mapping to every account
-    struct Staked {
-        uint256 _amount;
-        uint256 _TimeSinceRewarded;
-        uint256 _reward;
-    }
-
-    mapping( address => Staked) public individual;
-
-    //NOTICE: THIS FUNCTION IS PUBLIC FOR TESTING PURPOSE, OTHERWISE IT WOULD BE INTERNAL
-    function mintToken(address _addr, uint _amount) public {
-        _mint(_addr,_amount);
-    }
-
-    //update reward and update info
-    function stakeToken(uint _amt) public {
-        require(balanceOf(msg.sender)>_amt,"your balance is not enough");
-        transfer(address(this), _amt);
-        uint old_amount = individual[msg.sender]._amount;
-        uint new_reward = calculatedReward();
-        individual[msg.sender] = Staked(_amt + old_amount, block.timestamp,new_reward);
-    }
-
-    //update reward and update info
-    function unStakeToken(uint _amt) public{
-        uint old_amount = individual[msg.sender]._amount;
-        require(old_amount >= _amt,"not enough tokens to staked");
-        _transfer(address(this),msg.sender,_amt);
-        uint new_reward = calculatedReward();
-        individual[msg.sender] = Staked(old_amount - _amt, block.timestamp, new_reward);
-    }
-
-    //calculating reward
-    function calculatedReward() public view returns(uint) {
-        uint amt = individual[msg.sender]._amount;
-        uint time = individual[msg.sender]._TimeSinceRewarded;
-        uint old_reward = individual[msg.sender]._reward;
-        uint totalTime = block.timestamp - time;
-        uint _reward = totalTime*amt/1000 + old_reward;
-
-        return _reward;
-    }
-
-    //receiving reward
-    function receiveReward() public {
-        uint new_reward = calculatedReward();
-        mintToken(msg.sender,new_reward);
-        uint old_amount = individual[msg.sender]._amount;
-        individual[msg.sender] = Staked(old_amount, block.timestamp,0);
-    }
-
-     receive() payable external {}
-     fallback() payable external {}
 
 }
 
-//0x7C53360A37EA3C883E8BCfeBB6da35A35091AA87
-
-
+//0xbF6674f9582d3dadCdfce58253244cbCb1EC172c
